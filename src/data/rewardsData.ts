@@ -1,0 +1,58 @@
+import { RewardGift } from '../types';
+
+export const REWARD_GIFTS: RewardGift[] = [
+  {
+    id: 'gift-badge-pioneer',
+    name: 'Pioneer 10 Gold Plaque',
+    category: 'badge',
+    description: 'Commemorative interstellar message badge honoring humanity’s first craft to cross Jupiter and the Asteroid Belt.',
+    costCoins: 100,
+    icon: '🛰️',
+    rarity: 'common',
+  },
+  {
+    id: 'gift-apollo-patch',
+    name: 'Apollo 11 Flight Patch',
+    category: 'badge',
+    description: 'Golden eagle landing patch worn by Neil Armstrong and Buzz Aldrin at Tranquility Base.',
+    costCoins: 180,
+    icon: '🦅',
+    rarity: 'rare',
+  },
+  {
+    id: 'gift-oiii-filter',
+    name: 'Oxygen-III 3nm Narrowband Glass',
+    category: 'equipment',
+    description: 'Digital astrophotography filter simulation unlocking high-contrast teal emission line mapping.',
+    costCoins: 250,
+    icon: '🔬',
+    rarity: 'rare',
+  },
+  {
+    id: 'gift-ion-thruster',
+    name: 'Xenon Hall-Effect Thruster',
+    category: 'equipment',
+    description: 'Sublime ion propulsion thruster rendering for your active flight checkpoint rocket!',
+    costCoins: 350,
+    icon: '⚡',
+    rarity: 'epic',
+  },
+  {
+    id: 'gift-jwst-mirror',
+    name: 'Beryllium Gold Hexagonal Mirror Segment',
+    category: 'trophy',
+    description: 'Cryogenic 0.1-micron precision gold plated mirror honoring the James Webb Space Telescope.',
+    costCoins: 500,
+    icon: '✨',
+    rarity: 'legendary',
+  },
+  {
+    id: 'gift-warp-beacon',
+    name: 'Alcubierre Metric Nav-Beacon',
+    category: 'trophy',
+    description: 'Theoretical spacetime metric warp navigator for master physicists who completed advanced courses.',
+    costCoins: 750,
+    icon: '🌌',
+    rarity: 'legendary',
+  },
+];

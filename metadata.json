@@ -1,0 +1,6 @@
+{
+  "name": "Lambda Learn",
+  "description": "Interactive space learning platform exploring astronomy, aerospace, and astrophotography from basics to research-grade astrophysics with celestial checkpoints, physics simulators, community, and gallery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
