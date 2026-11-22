@@ -1,80 +1,40 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
-import './index.css';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./styles.css";
+import { Layout } from "./components/Layout";
+import Home from "./pages/Home";
+import Quiz from "./pages/Quiz";
+import NotFound from "./pages/NotFound";
+import { LearnIndex, LessonPage, TrackPage } from "./pages/Learn";
+import { Glossary, Labs, Sky } from "./pages/Explore";
+import { About, Auth, Privacy, Profile } from "./pages/Account";
+import { registerTracks } from "./lib/store";
+import "./lib/cloud"; // restores a signed-in session and starts sync
+import { TRACK_KEYS } from "./data/tracks";
 
-interface ErrorBoundaryState {
-  hasError: boolean;
-  errorMessage: string;
-}
+registerTracks(TRACK_KEYS);
 
-class AppErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  ErrorBoundaryState
-> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false, errorMessage: '' };
-  }
-
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return {
-      hasError: true,
-      errorMessage: error?.message || 'Unexpected rendering error',
-    };
-  }
-
-  componentDidCatch(error: Error) {
-    console.error('Lambda Learn caught runtime error:', error);
-    try {
-      localStorage.removeItem('lambda_learn_user');
-      localStorage.removeItem('lambda_learn_posts');
-      localStorage.removeItem('lambda_learn_photos');
-      localStorage.removeItem('lambda_learn_user_v2');
-      localStorage.removeItem('lambda_learn_posts_v2');
-      localStorage.removeItem('lambda_learn_photos_v2');
-    } catch {
-      // ignore storage errors
-    }
-  }
-
-  handleReset = () => {
-    try {
-      localStorage.clear();
-    } catch {
-      // ignore
-    }
-    this.setState({ hasError: false, errorMessage: '' });
-    window.location.reload();
-  };
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-[#090416] text-slate-100 flex items-center justify-center p-6">
-          <div className="max-w-md w-full rounded-3xl bg-[#130a2a] border border-amber-500/40 p-8 text-center space-y-4 shadow-2xl">
-            <div className="text-3xl font-serif font-bold text-amber-300">λ LAMBDA LEARN</div>
-            <h1 className="text-xl font-bold text-white">Space Cab Systems Resetting</h1>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              We cleared cached browser data that conflicted with the latest update. Click below to launch Lambda Learn cleanly.
-            </p>
-            <button
-              onClick={this.handleReset}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold text-sm cursor-pointer"
-            >
-              Launch Lambda Learn
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
-
-createRoot(document.getElementById('root')!).render(
-  <AppErrorBoundary>
-    <App />
-  </AppErrorBoundary>
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="learn" element={<LearnIndex />} />
+          <Route path="learn/:trackId" element={<TrackPage />} />
+          <Route path="learn/:trackId/:lessonId" element={<LessonPage />} />
+          <Route path="labs" element={<Labs />} />
+          <Route path="sky" element={<Sky />} />
+          <Route path="glossary" element={<Glossary />} />
+          <Route path="quiz" element={<Quiz />} />
+          <Route path="auth" element={<Auth />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="about" element={<About />} />
+          <Route path="privacy" element={<Privacy />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  </StrictMode>,
 );
