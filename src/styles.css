@@ -224,3 +224,22 @@ input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius
 @keyframes fadein { from { transform: translateY(10px); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
 @media (max-width: 720px) { .hero-art { opacity: 0.35; } .hero { padding-top: 72px; } }
+
+/* Launch Pad / kid-friendly */
+.shake { animation: shake .35s; }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.kid p, .kid li { font-size: 1.18rem; line-height: 1.75; }
+.prose p.speaking { background: oklch(88% 0.14 92 / 0.1); border-radius: 10px; box-shadow: 0 0 0 6px oklch(88% 0.14 92 / 0.1); }
+.words { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.word { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+.word b { display: block; color: var(--primary); font-family: var(--font-display); font-size: 1.05rem; }
+.activity { border: 2px dashed oklch(78% 0.11 210 / 0.5); background: oklch(78% 0.11 210 / 0.06); border-radius: 16px; padding: 18px 20px; margin: 1.4em 0; }
+.activity b { color: var(--accent); }
+.stage { position: relative; padding-left: 28px; border-left: 3px solid var(--border-strong); margin-left: 12px; }
+.stage::before { content: ""; position: absolute; left: -11px; top: 4px; width: 18px; height: 18px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 4px var(--bg); }
+.tag.basics { background: oklch(88% 0.14 92 / 0.15); color: var(--primary); }
+.game-tile:not([disabled]):hover { transform: translateY(-2px); }
+@media (max-width: 720px) {
+  .guide-row { grid-template-columns: 1fr !important; }
+  .btn { white-space: normal; text-align: center; }
+}

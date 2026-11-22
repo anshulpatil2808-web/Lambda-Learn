@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { TRACKS, TRACK_KEYS, lessonKey, trackById, type Check } from "../data/tracks";
+import { TRACKS, TRACK_KEYS, isBasics, lessonKey, trackById, type Check } from "../data/tracks";
 import { completeLesson, recordCheck, setLevel, useStore } from "../lib/store";
 import { SIMS } from "../components/Sims";
+import { GAMES } from "../components/Games";
+import { Picture } from "../components/Pictures";
 import { LambdaSays, Mascot } from "../components/Mascot";
 import { Rich, useTitle } from "../components/Layout";
 import NotFound from "./NotFound";
@@ -94,7 +96,7 @@ export function TrackPage() {
             <Link key={l.id} to={`/learn/${t.id}/${l.id}`} className="card hover">
               <div className="spread">
                 <span className="mono muted" style={{ fontSize: "0.8rem" }}>LESSON {i + 1} · {l.minutes} MIN</span>
-                {isDone ? <span className="tag" style={{ color: "var(--green)" }}>✓ Done</span> : l.sim ? <span className="tag">+ simulator</span> : null}
+                {isDone ? <span className="tag" style={{ color: "var(--green)" }}>✓ Done</span> : isBasics(l) ? <span className="tag basics">🛝 Launch Pad</span> : l.sim ? <span className="tag">+ simulator</span> : null}
               </div>
               <h3 style={{ marginTop: 10 }}>{l.title}</h3>
               <p className="muted" style={{ marginBottom: 0 }}>{l.summary}</p>
@@ -151,6 +153,44 @@ function CheckQuiz({ items, lessonId }: { items: Check[]; lessonId: string }) {
   );
 }
 
+/** Read paragraphs aloud one at a time using the browser's built-in voice. */
+function useReadAloud(texts: string[], resetKey: string) {
+  const supported = typeof window !== "undefined" && "speechSynthesis" in window;
+  const [idx, setIdx] = useState<number | null>(null);
+  const token = useRef(0);
+  const stop = useCallback(() => {
+    token.current++;
+    if (supported) window.speechSynthesis.cancel();
+    setIdx(null);
+  }, [supported]);
+  useEffect(() => {
+    return () => stop();
+  }, [resetKey, stop]);
+  const play = () => {
+    if (!supported) return;
+    stop();
+    const my = ++token.current;
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find((v) => /^en/i.test(v.lang) && /female|samantha|google us|zira|aria/i.test(v.name)) ?? voices.find((v) => /^en/i.test(v.lang));
+    const speakAt = (n: number) => {
+      if (token.current !== my) return;
+      if (n >= texts.length) return setIdx(null);
+      const u = new SpeechSynthesisUtterance(texts[n].replace(/\*\*/g, ""));
+      if (voice) u.voice = voice;
+      u.rate = 0.9;
+      u.pitch = 1.05;
+      u.onend = () => speakAt(n + 1);
+      u.onerror = () => {
+        if (token.current === my) setIdx(null);
+      };
+      setIdx(n);
+      window.speechSynthesis.speak(u);
+    };
+    speakAt(0);
+  };
+  return { supported, idx, speaking: idx !== null, play, stop };
+}
+
 export function LessonPage() {
   const { trackId, lessonId } = useParams();
   const t = trackById(trackId);
@@ -159,13 +199,16 @@ export function LessonPage() {
   const level = useStore((s) => s.level);
   const completed = useStore((s) => s.completed);
   useTitle(l?.title ?? "Not found");
+  const paras = l ? (level === "simple" ? l.simple : l.deep) : [];
+  const reader = useReadAloud(paras, `${trackId}/${lessonId}/${level}`);
   if (!t || !l) return <NotFound />;
   const key = lessonKey(t.id, l.id);
   const isDone = completed.includes(key);
   const prev = t.lessons[idx - 1];
   const next = t.lessons[idx + 1];
   const Sim = l.sim ? SIMS[l.sim] : undefined;
-  const paras = level === "simple" ? l.simple : l.deep;
+  const Game = l.game ? GAMES[l.game] : undefined;
+  const basics = isBasics(l);
 
   return (
     <div className="container">
@@ -192,23 +235,51 @@ export function LessonPage() {
         </aside>
 
         <article className="fade-in" key={key}>
-          <span className="eyebrow">{t.title} · Lesson {idx + 1} · {l.minutes} min</span>
+          <span className="eyebrow">
+            {basics && <span className="tag basics" style={{ marginRight: 8 }}>🛝 Launch Pad</span>}
+            {t.title} · Lesson {idx + 1} · {l.minutes} min
+          </span>
           <h1 style={{ fontSize: "clamp(2rem, 4.5vw, 3.2rem)" }}>{l.title}</h1>
           <p className="lead">{l.summary}</p>
+          {l.picture && (
+            <div style={{ margin: "24px 0", maxWidth: 720 }}>
+              <Picture name={l.picture} alt={`Picture for ${l.title}`} />
+            </div>
+          )}
           <div className="spread" style={{ margin: "24px 0" }}>
             <div className="level-toggle" role="group" aria-label="Explanation level">
               <button className={level === "simple" ? "on" : ""} onClick={() => setLevel("simple")}>🧒 Simple</button>
-              <button className={level === "deep" ? "on" : ""} onClick={() => setLevel("deep")}>🎓 Deep dive</button>
+              <button className={level === "deep" ? "on" : ""} onClick={() => setLevel("deep")}>{basics ? "🚀 A little more" : "🎓 Deep dive"}</button>
             </div>
-            {isDone && <span className="tag" style={{ color: "var(--green)" }}>✓ Completed</span>}
+            <div className="row">
+              {reader.supported && (
+                <button className="btn sm" onClick={reader.speaking ? reader.stop : () => reader.play()} aria-pressed={reader.speaking}>
+                  {reader.speaking ? "⏹ Stop reading" : "🔊 Read to me"}
+                </button>
+              )}
+              {isDone && <span className="tag" style={{ color: "var(--green)" }}>✓ Completed</span>}
+            </div>
           </div>
 
           <LambdaSays mood="happy">{l.lambda}</LambdaSays>
 
-          <div className="prose" style={{ marginTop: 28 }}>
+          <div className={`prose ${basics || level === "simple" ? "kid" : ""}`} style={{ marginTop: 28 }}>
             {paras.map((p, i) => (
-              <p key={i}><Rich text={p} /></p>
+              <p key={i} className={reader.idx === i ? "speaking" : undefined}><Rich text={p} /></p>
             ))}
+            {l.words && (
+              <>
+                <h3>📖 Words to know</h3>
+                <div className="words">
+                  {l.words.map((w) => (
+                    <div key={w.word} className="word"><b>{w.word}</b>{w.meaning}</div>
+                  ))}
+                </div>
+              </>
+            )}
+            {l.activity && (
+              <div className="activity"><b>🧪 Try it at home:</b> {l.activity}</div>
+            )}
             {l.formula && (
               <div className="formula">
                 {l.formula.expr}
@@ -222,6 +293,13 @@ export function LessonPage() {
             <div className="card" style={{ marginTop: 28 }}>
               <span className="eyebrow">Try it · {Sim.title}</span>
               <Sim.C />
+            </div>
+          )}
+
+          {Game && (
+            <div className="card" style={{ marginTop: 28 }}>
+              <span className="eyebrow">Play · {Game.emoji} {Game.title}</span>
+              <Game.C />
             </div>
           )}
 

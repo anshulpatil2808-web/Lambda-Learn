@@ -65,3 +65,32 @@ describe("content integrity", () => {
     for (const g of GLOSSARY) if (g.link) expect(keys.has(g.link), g.term).toBe(true);
   });
 });
+
+import { BASICS_KEYS, isBasics } from "../data/tracks";
+import { PICTURE_KEYS } from "../components/Pictures";
+import { GAMES } from "../components/Games";
+
+describe("Launch Pad basics", () => {
+  it("puts basics first in every track", () => {
+    for (const t of TRACKS) {
+      expect(isBasics(t.lessons[0]), `${t.id} should start with a basics lesson`).toBe(true);
+      const firstCore = t.lessons.findIndex((l) => !isBasics(l));
+      expect(t.lessons.slice(firstCore).some(isBasics), `${t.id}: basics after core`).toBe(false);
+    }
+  });
+  it("gives every basics lesson a picture, words, an activity and short sentences", () => {
+    expect(BASICS_KEYS.length).toBeGreaterThanOrEqual(12);
+    for (const t of TRACKS)
+      for (const l of t.lessons.filter(isBasics)) {
+        expect(PICTURE_KEYS, `${l.id} picture`).toContain(l.picture);
+        expect(l.words?.length, `${l.id} words`).toBeGreaterThanOrEqual(2);
+        expect(l.activity, `${l.id} activity`).toBeTruthy();
+        if (l.game) expect(GAMES[l.game], `${l.id} game`).toBeDefined();
+        // readability: average sentence under ~20 words
+        const text = l.simple.join(" ").replace(/\*\*/g, "");
+        const sentences = text.split(/[.!?]+\s/).filter(Boolean);
+        const avg = text.split(/\s+/).length / sentences.length;
+        expect(avg, `${l.id} avg words/sentence`).toBeLessThan(20);
+      }
+  });
+});

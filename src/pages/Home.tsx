@@ -32,7 +32,7 @@ export default function Home() {
         <Starfield />
         <HeroArt />
         <div className="container hero-content fade-in">
-          <span className="badge">✦ Self-paced · Ages 10 to PhD · Free</span>
+          <span className="badge">✦ Starts at 5th grade · goes all the way to PhD · Free</span>
           <h1>
             Space science anyone can <span className="grad">actually understand.</span>
           </h1>
@@ -40,7 +40,8 @@ export default function Home() {
             Astrophysics, astronomy, aerospace and astrophotography — one topic at a time or all together, guided by Lambda in the space cab.
           </p>
           <div className="row" style={{ marginTop: 28 }}>
-            <Link to="/quiz" className="btn primary">{profile ? "Retake the diagnostic" : "Start learning — take the quiz"} →</Link>
+            <Link to="/start" className="btn primary">🛝 Start with the basics →</Link>
+            <Link to="/quiz" className="btn">{profile ? "Retake the quiz" : "Take the 3-min quiz"}</Link>
             <a href="#demo" className="btn">Try a lesson</a>
             <Link to="/labs" className="btn">🛠 Open the labs</Link>
             <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="btn">GitHub ↗</a>

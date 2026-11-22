@@ -24,6 +24,7 @@ export interface State {
   completed: string[]; // lesson keys "track/lesson"
   checks: Record<string, number>; // lesson key -> best score (0..1)
   sims: string[];
+  games: string[];
   badges: string[];
   diagnostic: { score: number; recommended: string; at: string } | null;
   streak: { last: string; count: number };
@@ -37,6 +38,7 @@ const empty: State = {
   completed: [],
   checks: {},
   sims: [],
+  games: [],
   badges: [],
   diagnostic: null,
   streak: { last: "", count: 0 },
@@ -94,6 +96,7 @@ export function mergeStates(a: Partial<State>, b: Partial<State>): State {
     completed: uniq(A.completed, B.completed),
     checks,
     sims: uniq(A.sims, B.sims),
+    games: uniq(A.games, B.games),
     badges: uniq(A.badges, B.badges),
     diagnostic: A.diagnostic && B.diagnostic ? (newer(A.diagnostic.at, B.diagnostic.at) ? A.diagnostic : B.diagnostic) : A.diagnostic ?? B.diagnostic,
     streak: newer(A.streak.last, B.streak.last) ? A.streak : B.streak,
@@ -154,12 +157,16 @@ export const BADGES = [
   { id: "perfect", emoji: "💯", name: "Perfect Orbit", desc: "Ace 5 lesson checks" },
   { id: "streak-3", emoji: "🔥", name: "Ignition", desc: "Learn 3 days in a row" },
   { id: "xp-1000", emoji: "⚡", name: "Escape Velocity", desc: "Earn 1,000 XP" },
+  { id: "launch-pad", emoji: "🛝", name: "Launch Pad Grad", desc: "Finish all Launch Pad basics" },
+  { id: "gamer", emoji: "🎮", name: "Space Gamer", desc: "Win all 3 space games" },
 ];
 
 // Track lesson counts are injected by the content module to avoid a cycle.
 let trackLessonKeys: Record<string, string[]> = {};
-export function registerTracks(map: Record<string, string[]>) {
+let basicsKeys: string[] = [];
+export function registerTracks(map: Record<string, string[]>, basics: string[] = []) {
   trackLessonKeys = map;
+  basicsKeys = basics;
   state = withBadges(state);
 }
 
@@ -181,6 +188,8 @@ function withBadges(s: State): State {
   if (Object.values(s.checks).filter((v) => v >= 1).length >= 5) add("perfect");
   if (s.streak.count >= 3) add("streak-3");
   if (s.xp >= 1000) add("xp-1000");
+  if (basicsKeys.length && basicsKeys.every((k) => s.completed.includes(k))) add("launch-pad");
+  if (s.games.length >= 3) add("gamer");
   if (earned.size === s.badges.length) return s;
   return { ...s, badges: [...earned] };
 }
@@ -213,6 +222,14 @@ export function recordCheck(key: string, score: number) {
   const gained = Math.round((score - prev) * 30);
   set({ checks: { ...state.checks, [key]: score }, xp: state.xp + gained, streak: bumpStreak() });
   if (gained) toast(`+${gained} XP · Check passed`);
+}
+
+/** Win a game for the first time: +25 XP. */
+export function winGame(id: string) {
+  if (state.games.includes(id)) return false;
+  set({ games: [...state.games, id], xp: state.xp + 25, streak: bumpStreak() });
+  toast("+25 XP · Game won!");
+  return true;
 }
 
 export function markSim(id: string) {

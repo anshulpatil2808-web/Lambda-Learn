@@ -96,7 +96,14 @@ export default function Quiz() {
             <p className="lead">You earned <b style={{ color: "var(--primary)" }}>{result.xp} XP</b> and the 🧪 Pre-flight badge. Current rank: <b>{rankFor(getState().xp).name}</b>.</p>
             <div className="callout"><b>Recommended first track:</b> {trackById(result.rec)?.icon} {trackById(result.rec)?.title}</div>
             <div className="row" style={{ marginTop: 20 }}>
-              <Link to={`/learn/${result.rec}`} className="btn primary">Start {trackById(result.rec)?.short} →</Link>
+              {result.score < 6 || age === "kid" ? (
+                <>
+                  <Link to="/start" className="btn primary">🛝 Start on the Launch Pad →</Link>
+                  <Link to={`/learn/${result.rec}`} className="btn">Or jump to {trackById(result.rec)?.short}</Link>
+                </>
+              ) : (
+                <Link to={`/learn/${result.rec}`} className="btn primary">Start {trackById(result.rec)?.short} →</Link>
+              )}
               <Link to="/profile" className="btn">View profile</Link>
               <button className="btn ghost" onClick={() => { setStep(0); setAnswers(QS.map(() => null)); setResult(null); }}>Retake</button>
             </div>
