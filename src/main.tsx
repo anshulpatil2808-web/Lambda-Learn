@@ -5,15 +5,16 @@ import "./styles.css";
 import { Layout } from "./components/Layout";
 import Home from "./pages/Home";
 import Quiz from "./pages/Quiz";
+import Start, { Play } from "./pages/Start";
 import NotFound from "./pages/NotFound";
 import { LearnIndex, LessonPage, TrackPage } from "./pages/Learn";
 import { Glossary, Labs, Sky } from "./pages/Explore";
 import { About, Auth, Privacy, Profile } from "./pages/Account";
 import { registerTracks } from "./lib/store";
 import "./lib/cloud"; // restores a signed-in session and starts sync
-import { TRACK_KEYS } from "./data/tracks";
+import { BASICS_KEYS, TRACK_KEYS } from "./data/tracks";
 
-registerTracks(TRACK_KEYS);
+registerTracks(TRACK_KEYS, BASICS_KEYS);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -21,6 +22,8 @@ createRoot(document.getElementById("root")!).render(
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="start" element={<Start />} />
+          <Route path="play" element={<Play />} />
           <Route path="learn" element={<LearnIndex />} />
           <Route path="learn/:trackId" element={<TrackPage />} />
           <Route path="learn/:trackId/:lessonId" element={<LessonPage />} />

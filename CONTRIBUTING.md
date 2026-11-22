@@ -19,7 +19,7 @@ npm run typecheck && npm test && npm run build
 
 | You want to…              | Edit                              |
 | ------------------------- | --------------------------------- |
-| Fix or add a lesson       | `src/data/tracks.ts`              |
+| Fix or add a lesson       | `src/data/tracks.ts` (Launch Pad basics: `src/data/basics.ts`) |
 | Add a glossary term       | `src/data/glossary.ts`            |
 | Add a simulator           | `src/components/Sims.tsx` (add to the `SIMS` registry) |
 | Change colours / fonts    | top of `src/styles.css`           |

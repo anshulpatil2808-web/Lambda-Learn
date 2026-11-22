@@ -1,3 +1,4 @@
+import { BASICS } from "./basics";
 export interface Check {
   q: string;
   options: string[];
@@ -16,6 +17,12 @@ export interface Lesson {
   fact: string;
   sim?: string;
   check: Check[];
+  /** "basics" = Launch Pad lessons written for ~10-year-olds; default is core. */
+  level?: "basics" | "core";
+  picture?: string; // key into components/Pictures.tsx
+  words?: { word: string; meaning: string }[];
+  activity?: string; // a try-at-home activity
+  game?: string; // key into components/Games.tsx
 }
 export interface Track {
   id: string;
@@ -642,7 +649,12 @@ export const TRACKS: Track[] = [
   },
 ];
 
+// Launch Pad basics come first in every track.
+for (const t of TRACKS) t.lessons.unshift(...(BASICS[t.id] ?? []));
+
 export const lessonKey = (t: string, l: string) => `${t}/${l}`;
+export const isBasics = (l: Lesson) => l.level === "basics";
+export const BASICS_KEYS: string[] = TRACKS.flatMap((t) => t.lessons.filter(isBasics).map((l) => lessonKey(t.id, l.id)));
 export const trackById = (id?: string) => TRACKS.find((t) => t.id === id);
 export const TOTAL_LESSONS = TRACKS.reduce((n, t) => n + t.lessons.length, 0);
 export const TRACK_KEYS: Record<string, string[]> = Object.fromEntries(

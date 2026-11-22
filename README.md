@@ -9,7 +9,11 @@ astrophysics, astronomy, aerospace and astrophotography, from 5th grade to PhD, 
 
 ## Features
 
-- **4 tracks, 21 lessons.** Every lesson has a *Simple* (5th-grade) and a *Deep dive* (uni+) version,
+- **Starts at the basics.** A guided **Start Here** path (`/start`) begins with 12 **Launch Pad** lessons written for
+  5th graders, with a picture, "Words to know", a try-at-home activity, read-aloud and an easy quiz in each.
+  From there learners move up to Orbit (middle and high school) and Deep Space (university).
+- **3 space games** (`/play`): Planet Parade, Moon Month, and Space True or False.
+- **4 tracks, 33 lessons.** Every lesson has a *Simple* and a *Deep dive* version,
   a key formula, a cosmic fact and a 3-question check.
 - **15 simulators** (`/labs`): rocket thruster, rocket equation & staging, Newton's cannon orbit,
   Hohmann planner, wing lift, Kepler's 3rd law, telescope calculator, exoplanet transit,
@@ -19,7 +23,7 @@ astrophysics, astronomy, aerospace and astrophotography, from 5th grade to PhD, 
 - **Sky Tonight** (`/sky`): live Moon phase, a 30-night calendar, meteor showers rated by moonlight,
   the Bortle scale and an observing checklist.
 - **Glossary** of 60+ terms, and **Ask Lambda**, an offline helper on every page.
-- **XP, 6 ranks, 10 badges and streaks**, with progress export.
+- **XP, 6 ranks, 12 badges and streaks**, with progress export.
 - **Accounts (optional):** email one-time-code and Google sign-in through Supabase, with progress synced across devices.
   Without Supabase keys the app runs in local-only mode.
 

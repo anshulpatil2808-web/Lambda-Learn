@@ -33,10 +33,11 @@ function Nav() {
   useEffect(() => { setOpen(false); }, [loc.pathname]);
   const links = [
     ["/", "Home"],
+    ["/start", "Start Here"],
     ["/learn", "Learn"],
+    ["/play", "Play"],
     ["/labs", "Labs"],
     ["/sky", "Sky Tonight"],
-    ["/glossary", "Glossary"],
     ["/quiz", "Quiz"],
   ];
   return (
@@ -86,6 +87,8 @@ function Footer() {
           </div>
           <div>
             <h4>Explore</h4>
+            <Link to="/start">Start here</Link>
+            <Link to="/play">Space games</Link>
             <Link to="/labs">Simulator labs</Link>
             <Link to="/sky">Sky tonight</Link>
             <Link to="/glossary">Glossary</Link>
@@ -129,7 +132,7 @@ function answer(q: string): ReactNode {
   if (!s) return "Ask me about any space word — like 'black hole', 'ISO' or 'delta-v'!";
   if (/^(hi|hello|hey)\b/.test(s)) return "Hey there, space cadet! 👋 Ask me what a word means, or say 'where do I start?'";
   if (/start|begin|new|first/.test(s))
-    return <>Take the <Link to="/quiz">3-minute diagnostic</Link> and I'll pick your launch pad. Or jump into <Link to="/learn/aerospace/how-rockets-work">How rockets work</Link> — it's a crowd favourite!</>;
+    return <>Start on the <Link to="/start">Launch Pad</Link> — lesson 1 is <Link to="/learn/astronomy/what-is-space">What is space?</Link> Or take the <Link to="/quiz">3-minute quiz</Link> and I'll suggest where to begin!</>;
   if (/xp|rank|badge|level/.test(s))
     return <>You earn XP by finishing lessons (+50), passing checks (up to +30) and trying simulators (+10). Ranks go from Cadet to Astrophysicist. See <Link to="/profile">your profile</Link>.</>;
   if (/tonight|moon|meteor|see/.test(s))
