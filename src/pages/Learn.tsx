@@ -18,7 +18,7 @@ export function LearnIndex() {
       <div className="page-head">
         <span className="eyebrow">Curriculum</span>
         <h1>Choose your mission.</h1>
-        <p className="lead">Four self-paced tracks. Each lesson takes under 10 minutes and works at two levels — start anywhere.</p>
+        <p className="lead">{TRACKS.length} self-paced tracks. Each lesson takes under 10 minutes and works at two levels — start anywhere.</p>
         {diag && (
           <div className="callout" style={{ maxWidth: 640 }}>
             <b>Lambda recommends:</b> start with <Link to={`/learn/${diag.recommended}`} style={{ textDecoration: "underline" }}>{trackById(diag.recommended)?.title}</Link> based on your diagnostic.

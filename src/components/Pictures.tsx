@@ -259,7 +259,32 @@ const DarkSky = () => (
   </>
 );
 
+const POWERS: [string, string, string, number][] = [
+  ["10⁰ m", "You (about 1 m)", "🧒", 6],
+  ["10⁷ m", "Earth (12,700 km wide)", "🌍", 46],
+  ["10⁸ m", "To the Moon (3.8 × 10⁸ m)", "🌙", 66],
+  ["10¹¹ m", "To the Sun (1.5 × 10¹¹ m)", "☀️", 126],
+  ["10¹⁶ m", "One light-year", "✨", 226],
+  ["10²¹ m", "Across the Milky Way", "🌌", 330],
+];
+const Powers = () => (
+  <>
+    <rect width="400" height="240" fill="#05070f" />
+    <Stars n={25} seed={10} />
+    {POWERS.map(([p, label, e, w], i) => (
+      <g key={p} transform={`translate(0 ${22 + i * 36})`}>
+        <T x={12} y={14} a="start" s={13} c="#f5d34a">{p}</T>
+        <rect x="64" y="2" width={w} height="16" rx="8" fill="#2bb3c0" opacity={0.35 + i * 0.1} />
+        <text x={70 + w} y="15" fontSize="13">{e}</text>
+        <T x={90 + w > 330 ? 392 : 90 + w} y={15} a={90 + w > 330 ? "end" : "start"} s={11}>{label}</T>
+      </g>
+    ))}
+    <T x={200} y={234} s={10} c="#9aa">Each step right = many times more zeros</T>
+  </>
+);
+
 const MAP: Record<string, ComponentType> = {
+  powers: Powers,
   space: Space, daynight: DayNight, planets: Planets, constellation: Constellation, gravity: Gravity,
   light: Light, star: Star, plane: Plane, rocket: Rocket, camera: Camera, phone: Phone, darksky: DarkSky,
 };

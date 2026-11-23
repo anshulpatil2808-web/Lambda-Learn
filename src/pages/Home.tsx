@@ -107,7 +107,7 @@ export default function Home() {
       {/* TRACKS */}
       <section className="section">
         <div className="container">
-          <span className="eyebrow">Four tracks · your pace</span>
+          <span className="eyebrow">{TRACKS.length} tracks · your pace</span>
           <h2>Pick one subject or combine them all.</h2>
           <p className="lead">Every lesson has a 5th-grade explanation and a deep-dive version with the real equations, plus quick checks and a simulator.</p>
           <div className="grid g4" style={{ marginTop: 32 }}>

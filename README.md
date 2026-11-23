@@ -13,16 +13,20 @@ astrophysics, astronomy, aerospace and astrophotography, from 5th grade to PhD, 
   5th graders, with a picture, "Words to know", a try-at-home activity, read-aloud and an easy quiz in each.
   From there learners move up to Orbit (middle and high school) and Deep Space (university).
 - **3 space games** (`/play`): Planet Parade, Moon Month, and Space True or False.
-- **4 tracks, 33 lessons.** Every lesson has a *Simple* and a *Deep dive* version,
+- **Community forum** (`/community`): share projects, work through calculations and maths (with LaTeX), and discuss
+  telescope imaging. Photo uploads, likes, replies, search, reports and a moderation queue.
+- **5 tracks, 42 lessons**, including **Maths & Calculations** (powers of ten, units, angles, logarithms and magnitudes,
+  parallax, rearranging formulas) and **telescope imaging** (prime focus, plate scale and sampling, planetary lucky imaging).
+- Every lesson has a *Simple* and a *Deep dive* version,
   a key formula, a cosmic fact and a 3-question check.
-- **15 simulators** (`/labs`): rocket thruster, rocket equation & staging, Newton's cannon orbit,
+- **20 simulators and calculators** (`/labs`): plate scale & field of view, parallax, magnitudes, angular size, distance units, rocket thruster, rocket equation & staging, Newton's cannon orbit,
   Hohmann planner, wing lift, Kepler's 3rd law, telescope calculator, exoplanet transit,
   Moon phases, star colour (Wien), black-hole sizer, Hubble's law, night exposure triangle,
   Rule of 500 / NPF, and image stacking.
 - **Pre-flight diagnostic quiz** (`/quiz`) that finds your level and recommends a track.
 - **Sky Tonight** (`/sky`): live Moon phase, a 30-night calendar, meteor showers rated by moonlight,
   the Bortle scale and an observing checklist.
-- **Glossary** of 60+ terms, and **Ask Lambda**, an offline helper on every page.
+- **Glossary** of 75+ terms, and **Ask Lambda**, an offline helper on every page.
 - **XP, 6 ranks, 12 badges and streaks**, with progress export.
 - **Accounts (optional):** email one-time-code and Google sign-in through Supabase, with progress synced across devices.
   Without Supabase keys the app runs in local-only mode.
@@ -56,6 +60,26 @@ npm run dev        # http://localhost:5173
 
 Visitors who don't sign in still get full access. Their progress stays in their own browser, and it is merged into
 their account the first time they sign in.
+
+## Turning on the community
+
+The forum needs accounts (above) plus one more SQL file.
+
+1. In Supabase **SQL Editor**, run [`supabase/migrations/0002_community.sql`](supabase/migrations/0002_community.sql).
+   It creates profiles, posts, comments, likes and reports, the photo bucket (5 MB images), spam limits
+   (5 posts and 30 comments per hour), and row-level security so people can only change their own things.
+2. Make yourself a moderator: sign in to the site once, then in **SQL Editor** run
+   ```sql
+   insert into public.admins (user_id) select id from auth.users where email = 'you@example.com';
+   ```
+   A "Moderation queue" button then appears on the community page.
+3. Redeploy on Vercel so it picks up the environment variables.
+
+Until Supabase is connected, the live site shows "The community is almost ready".
+When you run `npm run dev` without keys, the forum runs in **demo mode**: posts stay in your browser and you are a pretend
+moderator, so you can try every screen.
+
+The database rules are tested against a real Postgres (PGlite) in `supabase/tests/community.test.ts`.
 
 ## Deploying
 
