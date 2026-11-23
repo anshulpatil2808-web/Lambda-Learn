@@ -1,7 +1,7 @@
 export interface Term {
   term: string;
   def: string;
-  track: "astrophysics" | "astronomy" | "aerospace" | "astrophotography";
+  track: "astrophysics" | "astronomy" | "aerospace" | "astrophotography" | "math";
   link?: string; // "track/lesson"
 }
 
@@ -67,4 +67,19 @@ export const GLOSSARY: Term[] = [
   { term: "Tidal locking", def: "When a body's rotation matches its orbit so it always shows the same face — like our Moon.", track: "astronomy", link: "astronomy/moon" },
   { term: "Transit", def: "When a planet passes in front of its star, slightly dimming it.", track: "astronomy", link: "astronomy/exoplanets" },
   { term: "White dwarf", def: "The hot, Earth-sized core left behind when a Sun-like star dies.", track: "astrophysics", link: "astrophysics/stars" },
+  { term: "Arcsecond", def: "1/3,600 of a degree. Used to measure tiny angles like star sizes, parallax and seeing.", track: "math", link: "math/angles-and-arcseconds" },
+  { term: "Absolute magnitude", def: "How bright a star would look from exactly 10 parsecs away.", track: "math", link: "math/logs-and-magnitudes" },
+  { term: "Distance modulus", def: "m − M = 5 log₁₀(d) − 5: links apparent brightness, true brightness and distance (in parsecs).", track: "math", link: "math/logs-and-magnitudes" },
+  { term: "Logarithm", def: "The power you raise a number to: log₁₀(1,000) = 3. Turns huge ranges into small numbers.", track: "math", link: "math/logs-and-magnitudes" },
+  { term: "Parallax", def: "The apparent shift of a nearby star as Earth orbits the Sun; d (pc) = 1 / p (arcsec).", track: "math", link: "math/parallax-and-trig" },
+  { term: "Scientific notation", def: "Writing numbers as a × 10ⁿ, like 1.5 × 10⁸ km for the Earth–Sun distance.", track: "math", link: "math/big-and-small-numbers" },
+  { term: "Small-angle formula", def: "θ (arcsec) ≈ 206,265 × size / distance — how big something looks.", track: "math", link: "math/angles-and-arcseconds" },
+  { term: "Plate scale", def: "How much sky each camera pixel sees: 206.265 × pixel size (µm) / focal length (mm), in arcsec per pixel.", track: "astrophotography", link: "astrophotography/plate-scale-and-sampling" },
+  { term: "Seeing", def: "Blurring of stars by moving air, usually 2–4 arcseconds at most sites.", track: "astrophotography", link: "astrophotography/plate-scale-and-sampling" },
+  { term: "Sampling", def: "How well pixel size matches star blur. Aim for 2–3 pixels across a star for sharp, round stars.", track: "astrophotography", link: "astrophotography/plate-scale-and-sampling" },
+  { term: "Prime focus", def: "Attaching a camera body directly to a telescope so the telescope acts as the lens.", track: "astrophotography", link: "astrophotography/camera-on-telescope" },
+  { term: "T-ring", def: "An adapter that fits your camera brand's lens mount so it can attach to a telescope.", track: "astrophotography", link: "astrophotography/camera-on-telescope" },
+  { term: "Focal reducer", def: "A lens that shortens a telescope's focal length for a wider, faster view.", track: "astrophotography", link: "astrophotography/camera-on-telescope" },
+  { term: "Barlow lens", def: "A lens that multiplies focal length (2×, 3×) to make planets bigger on the sensor.", track: "astrophotography", link: "astrophotography/planetary-imaging" },
+  { term: "Lucky imaging", def: "Recording thousands of short video frames and stacking only the sharpest ones.", track: "astrophotography", link: "astrophotography/planetary-imaging" },
 ];

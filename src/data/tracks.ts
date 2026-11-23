@@ -1,4 +1,5 @@
 import { BASICS } from "./basics";
+import { MATH_TRACK, TELESCOPE_LESSONS } from "./math";
 export interface Check {
   q: string;
   options: string[];
@@ -648,6 +649,10 @@ export const TRACKS: Track[] = [
     ],
   },
 ];
+
+// Extra tracks and lessons live in their own files to keep this one readable.
+TRACKS.push(MATH_TRACK);
+TRACKS.find((t) => t.id === "astrophotography")!.lessons.push(...TELESCOPE_LESSONS);
 
 // Launch Pad basics come first in every track.
 for (const t of TRACKS) t.lessons.unshift(...(BASICS[t.id] ?? []));

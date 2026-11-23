@@ -1,0 +1,263 @@
+import type { Lesson, Track } from "./tracks";
+
+/* ===================================================================== */
+/*  Track 05 — Maths & calculations for astronomy                         */
+/* ===================================================================== */
+export const MATH_TRACK: Track = {
+  id: "math",
+  num: "05",
+  title: "Maths & Calculations",
+  short: "Maths",
+  blurb: "The toolkit behind every space calculation: big numbers, units, angles, logarithms, parallax and rearranging formulas.",
+  icon: "🧮",
+  color: "var(--green)",
+  lessons: [
+    {
+      id: "big-and-small-numbers",
+      level: "basics",
+      title: "Really big and really small numbers",
+      minutes: 5,
+      summary: "Powers of ten — the secret language of space.",
+      lambda: "Space numbers are HUGE. Powers of ten let us write them without running out of zeros!",
+      picture: "powers",
+      simple: [
+        "Space is enormous. The Sun is about **150,000,000 km** away. That's a lot of zeros to write!",
+        "Scientists use a shortcut called **powers of ten**. 10² means 10 × 10 = 100. 10³ means 10 × 10 × 10 = 1,000. The little number tells you **how many zeros**.",
+        "So 150,000,000 km becomes **1.5 × 10⁸ km**. Count it: 1.5 followed by moving the decimal 8 places. Much tidier!",
+        "It works for tiny numbers too. A negative little number means 'divide'. 10⁻³ is one thousandth — 0.001. Atoms are about 10⁻¹⁰ metres across!",
+      ],
+      deep: [
+        "Writing a number as a × 10ⁿ, with a between 1 and 10, is called **scientific notation**.",
+        "To multiply, multiply the front numbers and **add** the powers: (2 × 10³) × (3 × 10⁴) = 6 × 10⁷.",
+        "To divide, divide the front numbers and **subtract** the powers: (8 × 10⁹) ÷ (2 × 10³) = 4 × 10⁶.",
+      ],
+      formula: { expr: "150,000,000 = 1.5 × 10⁸", note: "Move the decimal point 8 places → power of 8" },
+      words: [
+        { word: "Power of ten", meaning: "10 multiplied by itself — the small number says how many times." },
+        { word: "Scientific notation", meaning: "Writing numbers like 1.5 × 10⁸ to keep them short." },
+        { word: "Exponent", meaning: "The little raised number in 10⁸." },
+      ],
+      activity: "Write your age in seconds! Multiply your age × 365 × 24 × 60 × 60. Then write the answer in scientific notation. (A 10-year-old is about 3.2 × 10⁸ seconds old!)",
+      fact: "The observable universe is about 8.8 × 10²⁶ metres across — that's 88 followed by 25 zeros!",
+      sim: "units",
+      check: [
+        { q: "What is 10³?", options: ["30", "100", "1,000", "10,000"], answer: 2, why: "10 × 10 × 10 = 1,000 — three zeros." },
+        { q: "How do you write 5,000,000 in scientific notation?", options: ["5 × 10⁵", "5 × 10⁶", "50 × 10⁶", "5 × 10⁷"], answer: 1, why: "Move the decimal 6 places: 5 × 10⁶." },
+        { q: "(2 × 10³) × (4 × 10²) = ?", options: ["8 × 10⁵", "8 × 10⁶", "6 × 10⁵", "8 × 10¹"], answer: 0, why: "Multiply 2 × 4 = 8 and add the powers 3 + 2 = 5." },
+      ],
+    },
+    {
+      id: "units-and-distances",
+      title: "Units: kilometres, AU, light-years and parsecs",
+      minutes: 9,
+      summary: "Choosing the right ruler for space, and converting between them.",
+      lambda: "Using kilometres for galaxies is like measuring a road trip in millimetres — pick the right unit!",
+      simple: [
+        "Different jobs need different units. Inside the solar system we use the **astronomical unit (AU)**: the Earth–Sun distance, about **1.496 × 10⁸ km**.",
+        "For stars we use the **light-year (ly)** — how far light travels in a year, about **9.46 × 10¹² km** — or the **parsec (pc)**, which equals about **3.26 light-years**.",
+        "To convert, multiply by a **conversion factor** written as a fraction that equals 1, like (1 AU / 1.496 × 10⁸ km). The units you don't want cancel out.",
+        "Example: Proxima Centauri is 4.24 ly away. In km: 4.24 × 9.46 × 10¹² ≈ **4.0 × 10¹³ km**.",
+      ],
+      deep: [
+        "Dimensional analysis — tracking units through every step — catches most calculation mistakes. If your answer for a distance comes out in seconds, something's wrong.",
+        "Exact definitions: 1 AU = 149,597,870,700 m (IAU 2012); 1 ly = c × 1 Julian year = 9.4607 × 10¹⁵ m; 1 pc = 648000/π AU ≈ 3.0857 × 10¹⁶ m ≈ 206,265 AU.",
+        "SI prefixes save effort: kilo (10³), mega (10⁶), giga (10⁹); milli (10⁻³), micro (10⁻⁶), nano (10⁻⁹). Camera pixels are measured in micrometres (µm); wavelengths of light in nanometres (nm). Cosmologists use megaparsecs (Mpc).",
+      ],
+      formula: { expr: "1 pc ≈ 3.26 ly ≈ 206,265 AU ≈ 3.09 × 10¹³ km", note: "1 AU ≈ 1.496 × 10⁸ km · 1 ly ≈ 9.46 × 10¹² km" },
+      fact: "The parsec is defined by geometry: it's the distance at which 1 AU appears 1 arcsecond across.",
+      sim: "units",
+      check: [
+        { q: "About how many light-years are in one parsec?", options: ["1", "3.26", "206,265", "9.46"], answer: 1, why: "1 pc ≈ 3.26 ly." },
+        { q: "Which unit is best for distances inside the solar system?", options: ["Parsecs", "Light-years", "Astronomical units", "Nanometres"], answer: 2, why: "Planets are a few to tens of AU from the Sun." },
+        { q: "If you convert a distance and get an answer in km²·s, you should…", options: ["Trust it", "Check your units — something went wrong", "Round it", "Square root it"], answer: 1, why: "Units must match the quantity — that's dimensional analysis." },
+      ],
+    },
+    {
+      id: "angles-and-arcseconds",
+      title: "Angles in the sky: degrees, arcminutes, arcseconds",
+      minutes: 9,
+      summary: "Measuring how big things look, and the small-angle formula.",
+      lambda: "Hold your thumb at arm's length — it covers about 2°. The Moon is only about half a degree across!",
+      simple: [
+        "We can't measure the sky with a ruler, so we measure **angles**. A full circle is **360°**. From horizon to straight overhead is 90°.",
+        "Each degree splits into **60 arcminutes (′)**, and each arcminute into **60 arcseconds (″)**. So 1° = 3,600″.",
+        "Handy hand ruler at arm's length: little finger ≈ 1°, three middle fingers ≈ 5°, fist ≈ 10°, spread hand ≈ 20°.",
+        "The full Moon is about **31 arcminutes** wide. Jupiter appears about 30–50 arcseconds wide, which is why you need a telescope to see its disc.",
+      ],
+      deep: [
+        "Angles can also be measured in **radians**: 2π radians = 360°, so 1 rad ≈ 57.3° ≈ 206,265″.",
+        "For small angles, an object of size s at distance d spans θ ≈ s/d radians. In arcseconds: θ″ ≈ 206,265 × s/d (same units for s and d). This **small-angle formula** is used everywhere in astronomy.",
+        "Check with the Moon: s = 3,474 km, d = 384,400 km → θ ≈ 0.00904 rad ≈ 1,864″ ≈ 31′. ✓",
+      ],
+      formula: { expr: "θ (arcsec) ≈ 206,265 × size / distance", note: "Size and distance in the same units · valid for small angles" },
+      fact: "The Hubble Space Telescope can resolve about 0.05 arcseconds — like seeing a coin from 100 km away.",
+      sim: "angular",
+      check: [
+        { q: "How many arcseconds are in 1 degree?", options: ["60", "360", "3,600", "206,265"], answer: 2, why: "60′ × 60″ = 3,600″." },
+        { q: "About how wide does the full Moon look?", options: ["0.5°", "5°", "10°", "31°"], answer: 0, why: "About 31 arcminutes ≈ half a degree." },
+        { q: "If an object is twice as far away, its angular size becomes…", options: ["Twice as big", "Half as big", "Four times smaller", "The same"], answer: 1, why: "θ ≈ s/d, so doubling d halves θ." },
+      ],
+    },
+    {
+      id: "logs-and-magnitudes",
+      title: "Logarithms and the magnitude scale",
+      minutes: 10,
+      summary: "Why brighter stars have smaller numbers, and how logs tame huge ranges.",
+      lambda: "A logarithm just asks: 'how many times do I multiply by 10?' log₁₀(1000) = 3!",
+      simple: [
+        "Starlight covers a gigantic range — the Sun is about 10 billion times brighter than the brightest night star. To handle such ranges we use **logarithms**.",
+        "log₁₀(x) asks 'what power of ten makes x?' So log₁₀(100) = 2 and log₁₀(1,000,000) = 6. Logs turn multiplying into adding.",
+        "Astronomers measure brightness with **magnitudes**, an old system from ancient Greece: **smaller numbers mean brighter**. Sirius is −1.46, Vega about 0, and the faintest stars you can see from a dark site are about +6.5.",
+        "A difference of **5 magnitudes = 100× in brightness**. So 1 magnitude ≈ 2.512× (because 2.512⁵ ≈ 100).",
+      ],
+      deep: [
+        "The relation between two stars' fluxes F₁, F₂ and magnitudes is m₁ − m₂ = −2.5 log₁₀(F₁/F₂). Rearranged: F₁/F₂ = 10^(−0.4 (m₁ − m₂)).",
+        "**Absolute magnitude** M is how bright a star would look from 10 parsecs. The **distance modulus** links them: m − M = 5 log₁₀(d / 10 pc). If you know M (e.g. from a Cepheid's period), measuring m gives you distance.",
+        "Example: the Sun has M = 4.83 and m = −26.74. From 10 pc it would be a faint naked-eye star; from Proxima Centauri (1.30 pc) it would shine at about m ≈ 0.4.",
+      ],
+      formula: { expr: "m₁ − m₂ = −2.5 · log₁₀(F₁ / F₂)", note: "Distance modulus: m − M = 5 · log₁₀(d) − 5, with d in parsecs" },
+      fact: "The full Moon is about magnitude −12.7; the Sun about −26.7 — roughly 400,000 times brighter than the full Moon.",
+      sim: "magnitude",
+      check: [
+        { q: "log₁₀(10,000) = ?", options: ["3", "4", "10", "1000"], answer: 1, why: "10⁴ = 10,000." },
+        { q: "Which star is brightest?", options: ["Magnitude +6", "Magnitude +2", "Magnitude 0", "Magnitude −1.5"], answer: 3, why: "Smaller (more negative) magnitudes are brighter." },
+        { q: "Two stars differ by 5 magnitudes. Their brightness ratio is…", options: ["5×", "10×", "25×", "100×"], answer: 3, why: "By definition, 5 magnitudes = factor of 100." },
+      ],
+    },
+    {
+      id: "parallax-and-trig",
+      title: "Trigonometry and parallax: measuring star distances",
+      minutes: 9,
+      summary: "Using Earth's orbit as a giant ruler.",
+      lambda: "Close one eye, then the other — your thumb jumps! That's parallax, and it measures the stars.",
+      simple: [
+        "Hold up your thumb and look at it with one eye, then the other. Your thumb seems to **jump** against the background. That shift is called **parallax**.",
+        "Astronomers do the same thing with Earth's orbit. They photograph a nearby star in January and again in July, when Earth is on the other side of the Sun — 2 AU apart.",
+        "Nearby stars shift a tiny bit against far-away stars. The **smaller the shift, the farther the star**.",
+        "The shifts are tiny: even the closest star, Proxima Centauri, moves by less than 1 arcsecond. That's like the width of a coin seen from 5 km away!",
+      ],
+      deep: [
+        "In the right triangle formed by the Sun, Earth and the star, tan(p) = 1 AU / d. For tiny angles tan(p) ≈ p (in radians), which gives d = 1 AU / p.",
+        "Choosing units cleverly gives the neatest formula in astronomy: **d (parsecs) = 1 / p (arcseconds)**. That's exactly why the parsec was invented.",
+        "Proxima Centauri: p = 0.768″ → d = 1.30 pc = 4.24 ly. ESA's Gaia mission measures parallaxes to tens of micro-arcseconds for over a billion stars, building a 3D map of the Milky Way.",
+      ],
+      formula: { expr: "d (pc) = 1 / p (arcsec)", note: "From tan p = 1 AU / d with the small-angle approximation" },
+      fact: "Friedrich Bessel made the first successful stellar parallax measurement in 1838, of the star 61 Cygni.",
+      sim: "parallax",
+      check: [
+        { q: "A star with parallax 0.5″ is how far away?", options: ["0.5 pc", "2 pc", "5 pc", "50 pc"], answer: 1, why: "d = 1/p = 1/0.5 = 2 pc." },
+        { q: "A smaller parallax angle means the star is…", options: ["Closer", "Farther", "Brighter", "Hotter"], answer: 1, why: "d = 1/p: smaller p → larger d." },
+        { q: "Why measure parallax six months apart?", options: ["Better weather", "Earth is on the opposite side of its orbit", "Stars move faster then", "Telescopes need rest"], answer: 1, why: "It gives the longest possible baseline: 2 AU." },
+      ],
+    },
+    {
+      id: "rearranging-formulas",
+      title: "Rearranging formulas and checking your answer",
+      minutes: 8,
+      summary: "Solve any space formula for the thing you want — and know if it's right.",
+      lambda: "Whatever you do to one side of an equation, do to the other — like keeping a seesaw balanced!",
+      simple: [
+        "Most space calculations start with a formula and a question like 'what's the distance?' or 'how long?'. Often the thing you want isn't on its own, so you **rearrange**.",
+        "The golden rule: **do the same thing to both sides**. If F = m × a and you want a, divide both sides by m: a = F / m.",
+        "Then **estimate first**: round the numbers and guess the answer roughly. If your calculator says something wildly different, check again.",
+        "Finally, **check the units**. If you're finding a speed, your answer should be in km/s or m/s — not kg!",
+      ],
+      deep: [
+        "Worked example — Kepler's third law P² = a³ (years, AU). A comet has a period of 76 years. Solve for a: a = P^(2/3) = 76^(2/3) ≈ 17.9 AU (Halley's Comet ✓).",
+        "Worked example — rocket equation Δv = vₑ ln(m₀/m_f). Required mass ratio: m₀/m_f = e^(Δv / vₑ). For Δv = 9.4 km/s and vₑ = 3.3 km/s: e^2.85 ≈ 17 — single stage to orbit would need 94% propellant, which is why rockets stage.",
+        "Sanity checks: extreme cases (what if the mass were zero? the distance infinite?), symmetry, and order of magnitude. Professional astronomers do these constantly.",
+      ],
+      formula: { expr: "P² = a³  ⇒  a = P^(2/3)", note: "Raise both sides to the 1/3 power, then square" },
+      fact: "Enrico Fermi was famous for 'Fermi estimates' — getting surprisingly accurate answers from rough rounding.",
+      sim: "kepler",
+      check: [
+        { q: "Rearrange v = d / t to find t.", options: ["t = v × d", "t = d / v", "t = v / d", "t = d − v"], answer: 1, why: "Multiply both sides by t, then divide by v." },
+        { q: "An object orbits the Sun with P = 8 years. Its distance a is…", options: ["2 AU", "4 AU", "8 AU", "64 AU"], answer: 1, why: "a = 8^(2/3) = 4 AU (check: 4³ = 64 = 8²)." },
+        { q: "You calculate a planet's orbital speed as 30 kg. What's wrong?", options: ["Nothing", "The units — speed can't be in kg", "It should be negative", "It's too small"], answer: 1, why: "Units tell you the quantity — a speed needs distance/time." },
+      ],
+    },
+  ],
+};
+
+/* ===================================================================== */
+/*  Extra astrophotography lessons: imaging through a telescope          */
+/* ===================================================================== */
+export const TELESCOPE_LESSONS: Lesson[] = [
+  {
+    id: "camera-on-telescope",
+    title: "Connecting a camera to a telescope",
+    minutes: 9,
+    summary: "Phone at the eyepiece, prime focus, and dedicated astro cameras.",
+    lambda: "At prime focus, your telescope becomes a giant camera lens!",
+    simple: [
+      "**Afocal (phone) method:** hold or clamp your phone camera to the eyepiece. It's the cheapest way to start and works great for the Moon and planets. A phone adapter keeps it lined up.",
+      "**Prime focus:** remove the eyepiece and the camera lens. A **T-ring** (made for your camera brand) and **T-adapter** attach the camera body straight onto the telescope. Now the telescope *is* the lens — its focal length sets the magnification.",
+      "**Dedicated astronomy cameras** connect the same way. Many are **cooled** to reduce noise, and some are **monochrome**, used with colour or narrowband filters.",
+      "Can't reach focus with a camera? Many reflectors need a short extension or moving the mirror; some need a low-profile focuser. Check before buying!",
+    ],
+    deep: [
+      "Image scale depends only on focal length: a 1,000 mm telescope gives the same image size on the sensor as a 1,000 mm camera lens.",
+      "**Focal reducers** (e.g. 0.8×) shorten focal length, widening the field and making the system faster (lower f-ratio) — great for nebulae. **Barlow lenses** (2×, 3×) lengthen it for planets.",
+      "Flatteners correct field curvature in refractors so stars stay round to the corners. Back-focus spacing (often 55 mm from the flattener to the sensor) must be correct, or edge stars become elongated.",
+    ],
+    formula: { expr: "Effective focal length = telescope f × reducer or Barlow factor", note: "e.g. 400 mm × 0.8 = 320 mm · 1,200 mm × 2 = 2,400 mm" },
+    fact: "Many famous early astrophotographs, like the 1880s Orion Nebula plates, used prime focus on large refractors with glass photographic plates.",
+    check: [
+      { q: "At prime focus, what acts as the camera lens?", options: ["The eyepiece", "The telescope itself", "A phone", "A filter"], answer: 1, why: "The camera body attaches directly; the telescope forms the image." },
+      { q: "A 0.8× reducer on a 500 mm telescope gives…", options: ["400 mm", "625 mm", "1,000 mm", "500 mm"], answer: 0, why: "500 × 0.8 = 400 mm." },
+      { q: "What do you need to attach a camera body to a telescope?", options: ["A tripod", "A T-ring and T-adapter", "A star diagonal only", "A red light"], answer: 1, why: "The T-ring matches the camera mount; the adapter fits the focuser." },
+    ],
+  },
+  {
+    id: "plate-scale-and-sampling",
+    title: "Plate scale, field of view and sampling",
+    minutes: 10,
+    summary: "Match your camera to your telescope and your sky.",
+    lambda: "Plate scale tells you how much sky each pixel sees — get it right and stars look sharp and round!",
+    simple: [
+      "Every pixel on your camera sees a tiny patch of sky. The size of that patch is the **plate scale**, measured in **arcseconds per pixel** (″/px).",
+      "It depends on two things: your **pixel size** and your telescope's **focal length**. Longer focal length or smaller pixels = each pixel sees less sky = more zoomed in.",
+      "The whole sensor sees a rectangle of sky called the **field of view (FOV)**. A short telescope with a big sensor shows big nebulae; a long telescope shows small galaxies up close.",
+      "Our atmosphere blurs stars to about **2–4 arcseconds** (called **seeing**). For deep-sky photos, aim for about **1–2″ per pixel** on most nights.",
+    ],
+    deep: [
+      "Plate scale: s = 206.265 × pixel size (µm) / focal length (mm) ″/px. FOV (arcmin) ≈ 3,438 × sensor dimension (mm) / focal length (mm).",
+      "Sampling guideline (Nyquist-inspired): put 2–3 pixels across the seeing disc's FWHM, so s ≈ seeing / 3 to seeing / 2. Much smaller is **oversampled** (dimmer per pixel, no extra detail; binning helps). Much larger is **undersampled** (blocky stars).",
+      "Example: 80 mm f/6 refractor (480 mm) with 3.76 µm pixels → s = 206.265 × 3.76 / 480 ≈ 1.62″/px. Matched for 3–5″ seeing; slightly undersampled in excellent 2″ seeing.",
+    ],
+    formula: { expr: "Plate scale (″/px) = 206.265 × pixel (µm) / focal length (mm)", note: "FOV (′) ≈ 3,438 × sensor size (mm) / focal length (mm)" },
+    fact: "Binning 2×2 combines four pixels into one, doubling the plate scale — a quick fix for oversampled long-focal-length scopes.",
+    sim: "platescale",
+    check: [
+      { q: "Making the focal length longer makes the plate scale…", options: ["Larger (more sky per pixel)", "Smaller (less sky per pixel)", "Unchanged", "Negative"], answer: 1, why: "Focal length is in the denominator." },
+      { q: "Typical seeing blurs stars to about…", options: ["0.01″", "2–4″", "1°", "30′"], answer: 1, why: "Atmospheric turbulence limits most sites to a few arcseconds." },
+      { q: "Pixel size 4 µm on a 412.5 mm telescope gives about…", options: ["0.5″/px", "1″/px", "2″/px", "4″/px"], answer: 2, why: "206.265 × 4 / 412.5 ≈ 2.0″/px." },
+    ],
+  },
+  {
+    id: "planetary-imaging",
+    title: "Planetary imaging: lucky imaging",
+    minutes: 9,
+    summary: "Shoot video, keep the sharpest frames, and reveal Jupiter's storms.",
+    lambda: "For planets, take thousands of super-short frames — and keep only the lucky sharp ones!",
+    simple: [
+      "Planets are small but bright. The problem is the air: it shimmers, so the planet wobbles and blurs. The trick is called **lucky imaging**.",
+      "Record a short **video** of thousands of frames, each a few milliseconds long. In some frames, the air happens to be calm — those are your 'lucky' frames.",
+      "Software like **AutoStakkert!** picks the sharpest 5–20% and stacks them. **RegiStax** or similar tools then sharpen the result.",
+      "Use a **Barlow lens** to make the planet bigger, and image when the planet is **high in the sky**, where you look through less air.",
+    ],
+    deep: [
+      "A common rule for the f-ratio: f/ratio ≈ 3 to 5 × pixel size (µm). A 2.9 µm camera works well around f/9 to f/15 — e.g. a 200 mm f/5 Newtonian with a 2×–3× Barlow.",
+      "Keep captures short: Jupiter rotates once in about 10 hours, so details smear after roughly 2–3 minutes at high resolution. WinJUPOS can 'derotate' longer sequences.",
+      "Shoot at high frame rates with a small region of interest, low exposure (~5–15 ms) and enough gain to reach a histogram of ~50–70%. An atmospheric dispersion corrector (ADC) fixes colour fringing at low altitudes.",
+    ],
+    formula: { expr: "Target f-ratio ≈ (3 to 5) × pixel size (µm)", note: "Barlow factor needed = target f-ratio ÷ telescope f-ratio" },
+    fact: "Amateur lucky-imaging setups routinely catch new storms on Jupiter and Saturn, and have recorded impacts on Jupiter's cloud tops.",
+    sim: "platescale",
+    check: [
+      { q: "What is 'lucky imaging'?", options: ["Imaging on your birthday", "Keeping only the sharpest frames from a video", "Using a lucky charm", "Shooting one long exposure"], answer: 1, why: "Calm moments in the air give sharp frames worth stacking." },
+      { q: "With 2.9 µm pixels, a good f-ratio for planets is about…", options: ["f/2", "f/5", "f/12", "f/50"], answer: 2, why: "3–5 × 2.9 ≈ f/9 to f/15." },
+      { q: "Why keep Jupiter videos short?", options: ["Files are big", "Jupiter rotates and details smear", "The camera overheats", "No reason"], answer: 1, why: "Jupiter spins in ~10 h, blurring fine detail after a few minutes." },
+    ],
+  },
+];

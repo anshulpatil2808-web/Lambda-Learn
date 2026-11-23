@@ -36,9 +36,9 @@ function Nav() {
     ["/start", "Start Here"],
     ["/learn", "Learn"],
     ["/play", "Play"],
+    ["/community", "Community"],
     ["/labs", "Labs"],
     ["/sky", "Sky Tonight"],
-    ["/quiz", "Quiz"],
   ];
   return (
     <header className="nav">
@@ -88,6 +88,7 @@ function Footer() {
           <div>
             <h4>Explore</h4>
             <Link to="/start">Start here</Link>
+            <Link to="/community">Community</Link>
             <Link to="/play">Space games</Link>
             <Link to="/labs">Simulator labs</Link>
             <Link to="/sky">Sky tonight</Link>

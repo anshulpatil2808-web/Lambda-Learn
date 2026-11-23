@@ -747,6 +747,228 @@ export function MoonSim() {
   );
 }
 
+/* ---------- 16. Unit converter ---------- */
+const DIST_UNITS = [
+  { id: "km", label: "km", km: 1 },
+  { id: "au", label: "AU", km: 1.495978707e8 },
+  { id: "ly", label: "light-years", km: 9.4607e12 },
+  { id: "pc", label: "parsecs", km: 3.0857e13 },
+] as const;
+const DIST_PRESETS: [string, number, (typeof DIST_UNITS)[number]["id"]][] = [
+  ["Moon", 384400, "km"], ["Sun", 1, "au"], ["Neptune", 30.07, "au"], ["Proxima Centauri", 4.24, "ly"], ["Galactic centre", 8.2, "pc"], ["Andromeda", 2.5e6, "ly"],
+];
+export function UnitsSim() {
+  const touch = useTouch("units");
+  const [val, setVal] = useState("4.24");
+  const [unit, setUnit] = useState<(typeof DIST_UNITS)[number]["id"]>("ly");
+  const n = parseFloat(val);
+  const km = n * DIST_UNITS.find((u) => u.id === unit)!.km;
+  const lightTime = (km * 1000) / 299792458; // seconds
+  const lt = lightTime < 120 ? `${fmt(lightTime, 1)} s` : lightTime < 7200 ? `${fmt(lightTime / 60, 1)} min` : lightTime < 2 * 86400 * 365.25 ? `${fmt(lightTime / 3600, 1)} h` : `${fmtSci(lightTime / (86400 * 365.25), 3)} years`;
+  return (
+    <SimShell>
+      <div className="row" style={{ flexWrap: "nowrap" }}>
+        <input className="field" inputMode="decimal" value={val} onChange={(e) => { touch(); setVal(e.target.value); }} aria-label="Distance value" style={{ maxWidth: 200 }} />
+        <Chips options={DIST_UNITS.map((u) => u.id)} value={unit} onChange={(v) => { touch(); setUnit(v); }} render={(v) => DIST_UNITS.find((u) => u.id === v)!.label} />
+      </div>
+      <div className="grid g2" style={{ gap: 14, marginTop: 18 }}>
+        {DIST_UNITS.map((u) => (
+          <Readout key={u.id} label={u.label} value={Number.isFinite(km) ? fmtSci(km / u.km, 3) : "—"} />
+        ))}
+      </div>
+      <p className="muted" style={{ marginTop: 14 }}>💡 Light takes <b style={{ color: "var(--fg)" }}>{Number.isFinite(km) ? lt : "—"}</b> to cross this distance.</p>
+      <div className="row" style={{ gap: 6 }}>
+        {DIST_PRESETS.map(([name, v, u]) => (
+          <button key={name} className="chip" onClick={() => { touch(); setVal(String(v)); setUnit(u); }}>{name}</button>
+        ))}
+      </div>
+    </SimShell>
+  );
+}
+
+/* ---------- 17. Angular size (small-angle formula) ---------- */
+const ANG_PRESETS: [string, number, number][] = [
+  ["Moon", 3474, 384400], ["Sun", 1.3927e6, 1.496e8], ["Jupiter (closest)", 139820, 5.88e8], ["ISS overhead", 0.109, 420], ["Coin at 100 m", 0.0000243, 0.1],
+];
+function fmtAngle(arcsec: number) {
+  if (!Number.isFinite(arcsec)) return "—";
+  if (arcsec >= 3600) return `${fmt(arcsec / 3600, 2)}°`;
+  if (arcsec >= 60) return `${fmt(arcsec / 60, 2)}′`;
+  return `${fmt(arcsec, arcsec < 1 ? 3 : 1)}″`;
+}
+export function AngularSim() {
+  const touch = useTouch("angular");
+  const [size, setSize] = useState(3474);
+  const [dist, setDist] = useState(384400);
+  const rad = 2 * Math.atan(size / (2 * dist));
+  const arcsec = (rad * 180 * 3600) / Math.PI;
+  const approx = (206265 * size) / dist;
+  const eyeOK = arcsec >= 60;
+  return (
+    <SimShell>
+      <div className="grid g2" style={{ gap: 14 }}>
+        <Readout label="Angular size" value={fmtAngle(arcsec)} />
+        <Readout label="Small-angle estimate (206,265 × s / d)" value={fmtAngle(approx)} />
+      </div>
+      <p className={eyeOK ? "status-ok" : "muted"}>{eyeOK ? "Big enough for the eye to see as a disc (≈1′ limit)." : "Smaller than ~1′ — it looks like a point without a telescope."}</p>
+      <label className="ctrl"><span className="spread"><span>Object size (km)</span></span>
+        <input className="field" inputMode="decimal" value={size} onChange={(e) => { touch(); setSize(parseFloat(e.target.value) || 0); }} aria-label="Object size in km" />
+      </label>
+      <label className="ctrl"><span className="spread"><span>Distance (km)</span></span>
+        <input className="field" inputMode="decimal" value={dist} onChange={(e) => { touch(); setDist(parseFloat(e.target.value) || 1); }} aria-label="Distance in km" />
+      </label>
+      <div className="row" style={{ gap: 6, marginTop: 14 }}>
+        {ANG_PRESETS.map(([n, s, d]) => <button key={n} className="chip" onClick={() => { touch(); setSize(s); setDist(d); }}>{n}</button>)}
+      </div>
+    </SimShell>
+  );
+}
+
+/* ---------- 18. Magnitudes ---------- */
+const MAG_PRESETS: [string, number][] = [["Sun", -26.74], ["Full Moon", -12.7], ["Venus (max)", -4.9], ["Sirius", -1.46], ["Vega", 0.03], ["Polaris", 1.98], ["Naked-eye limit", 6.5], ["Pluto", 14.4]];
+export function MagnitudeSim() {
+  const touch = useTouch("magnitude");
+  const [m1, setM1] = useState(-1.46);
+  const [m2, setM2] = useState(1.98);
+  const [absM, setAbsM] = useState(4.83);
+  const [dpc, setDpc] = useState(10);
+  const ratio = Math.pow(10, -0.4 * (m1 - m2));
+  const apparent = absM + 5 * Math.log10(dpc) - 5;
+  return (
+    <SimShell
+      side={
+        <div>
+          <div className="muted" style={{ fontSize: "0.85rem", marginBottom: 6 }}>Distance modulus: how bright from far away?</div>
+          <Readout label="Apparent magnitude m" value={apparent.toFixed(2)} />
+          <Slider label="Absolute magnitude M" value={absM} min={-10} max={15} step={0.01} display={absM.toFixed(2)} onChange={(v) => { touch(); setAbsM(v); }} />
+          <Slider label="Distance" value={Math.log10(dpc)} min={-5.3} max={6} step={0.01} display={`${fmtSci(dpc, 3)} pc`} onChange={(v) => { touch(); setDpc(10 ** v); }} />
+          <p className="muted" style={{ fontSize: "0.85rem" }}>{apparent <= 6.5 ? "✓ Visible to the naked eye from a dark site." : apparent <= 12 ? "Needs binoculars or a small telescope." : "Needs a large telescope or long exposures."}</p>
+          <div className="row" style={{ gap: 6 }}>
+            <button className="chip" onClick={() => { setAbsM(4.83); setDpc(10); }}>Sun from 10 pc</button>
+            <button className="chip" onClick={() => { setAbsM(4.83); setDpc(1.3); }}>Sun from Proxima</button>
+            <button className="chip" onClick={() => { setAbsM(-3.5); setDpc(800000); }}>Cepheid in Andromeda</button>
+          </div>
+        </div>
+      }
+    >
+      <Readout label="Star A is this many times brighter than star B" value={`${fmtSci(ratio, 3)}×`} />
+      <Slider label="Star A magnitude" value={m1} min={-27} max={15} step={0.01} display={m1.toFixed(2)} onChange={(v) => { touch(); setM1(v); }} />
+      <Slider label="Star B magnitude" value={m2} min={-27} max={15} step={0.01} display={m2.toFixed(2)} onChange={(v) => { touch(); setM2(v); }} />
+      <div className="row" style={{ gap: 6, marginTop: 12 }}>
+        {MAG_PRESETS.map(([n, m]) => <button key={n} className="chip" onClick={() => { touch(); setM1(m); }}>{n}</button>)}
+      </div>
+      <p className="muted" style={{ fontSize: "0.82rem", marginTop: 8 }}>Presets set star A. Ratio = 10^(−0.4 × (m_A − m_B)).</p>
+    </SimShell>
+  );
+}
+
+/* ---------- 19. Parallax ---------- */
+export function ParallaxSim() {
+  const touch = useTouch("parallax");
+  const [lp, setLp] = useState(Math.log10(0.768));
+  const p = 10 ** lp;
+  const d = 1 / p;
+  const shift = Math.min(60, 8 + p * 40);
+  return (
+    <SimShell
+      side={
+        <svg viewBox="0 0 220 200" className="sim-canvas" role="img" aria-label="Parallax triangle">
+          {Array.from({ length: 24 }, (_, i) => <circle key={i} cx={(i * 47) % 220} cy={10 + ((i * 29) % 40)} r="1.2" fill="#fff" opacity="0.6" />)}
+          <circle cx="110" cy="170" r="6" fill="#f5d34a" />
+          <circle cx="60" cy="170" r="4" fill="#4fb3ff" /><circle cx="160" cy="170" r="4" fill="#4fb3ff" />
+          <text x="60" y="190" fontSize="8" fill="#9aa" textAnchor="middle">Jan</text>
+          <text x="160" y="190" fontSize="8" fill="#9aa" textAnchor="middle">Jul</text>
+          <line x1="60" y1="170" x2="110" y2={70 + 40 / (1 + p)} stroke="#2bb3c0" strokeDasharray="3 3" />
+          <line x1="160" y1="170" x2="110" y2={70 + 40 / (1 + p)} stroke="#2bb3c0" strokeDasharray="3 3" />
+          <circle cx="110" cy={70 + 40 / (1 + p)} r="4" fill="#fff" />
+          <circle cx={110 - shift / 2} cy="30" r="3" fill="#ff7a59" /><circle cx={110 + shift / 2} cy="30" r="3" fill="#ff7a59" />
+          <text x="110" y="20" fontSize="8" fill="#ff7a59" textAnchor="middle">apparent shift (exaggerated)</text>
+        </svg>
+      }
+    >
+      <div className="grid g2" style={{ gap: 14 }}>
+        <Readout label="Distance" value={fmtSci(d, 3)} unit="pc" />
+        <Readout label="In light-years" value={fmtSci(d * 3.2616, 3)} unit="ly" />
+      </div>
+      <Slider label="Parallax angle" value={lp} min={-4.7} max={0} step={0.01} display={p >= 0.001 ? `${fmt(p, 4)}″` : `${fmt(p * 1e6, 0)} µas`} onChange={(v) => { touch(); setLp(v); }} />
+      <div className="row" style={{ gap: 6, marginTop: 12 }}>
+        <button className="chip" onClick={() => setLp(Math.log10(0.768))}>Proxima Centauri</button>
+        <button className="chip" onClick={() => setLp(Math.log10(0.379))}>Sirius</button>
+        <button className="chip" onClick={() => setLp(Math.log10(0.287))}>61 Cygni</button>
+        <button className="chip" onClick={() => setLp(Math.log10(0.0022))}>Polaris</button>
+      </div>
+      <p className="muted" style={{ fontSize: "0.85rem", marginTop: 10 }}>d (pc) = 1 / p (″). Ground telescopes manage ~0.01″; ESA's Gaia reaches tens of micro-arcseconds (µas).</p>
+    </SimShell>
+  );
+}
+
+/* ---------- 20. Plate scale & field of view ---------- */
+const SENSORS = [
+  { id: "ff", label: "Full frame", w: 36, h: 24, px: 5.9 },
+  { id: "apsc", label: "APS-C", w: 23.5, h: 15.6, px: 3.9 },
+  { id: "585", label: "IMX585 astro cam", w: 11.2, h: 6.3, px: 2.9 },
+  { id: "533", label: "IMX533 astro cam", w: 11.3, h: 11.3, px: 3.76 },
+];
+export function PlateScaleSim() {
+  const touch = useTouch("platescale");
+  const [focal, setFocal] = useState(480);
+  const [aperture, setAperture] = useState(80);
+  const [factor, setFactor] = useState(1);
+  const [sensor, setSensor] = useState("533");
+  const [seeing, setSeeing] = useState(2.5);
+  const s = SENSORS.find((x) => x.id === sensor)!;
+  const [px, setPx] = useState(s.px);
+  const f = focal * factor;
+  const scale = (206.265 * px) / f;
+  const fovW = (3437.75 * s.w) / f;
+  const fovH = (3437.75 * s.h) / f;
+  const fr = f / aperture;
+  const lo = seeing / 3, hi = seeing / 2;
+  const verdict = scale < lo * 0.8 ? ["Oversampled — try 2×2 binning or a reducer", "warn"] : scale > hi * 1.3 ? ["Undersampled — stars may look blocky", "warn"] : ["Well matched to your seeing", "ok"];
+  const planetaryFr = [3 * px, 5 * px];
+  return (
+    <SimShell
+      side={
+        <div>
+          <div className="muted" style={{ fontSize: "0.85rem", marginBottom: 6 }}>Field of view vs the full Moon (31′)</div>
+          <svg viewBox="-110 -80 220 160" className="sim-canvas" role="img" aria-label="Field of view compared with the Moon">
+            {(() => {
+              const k = 150 / Math.max(fovW, 31 * 1.2, 1);
+              return (
+                <>
+                  <circle r={(31 / 2) * k} fill="#cfc6a8" opacity="0.85" />
+                  <rect x={(-fovW / 2) * k} y={(-fovH / 2) * k} width={fovW * k} height={fovH * k} fill="none" stroke="#f5d34a" strokeWidth="2" />
+                </>
+              );
+            })()}
+          </svg>
+          <p className="muted" style={{ fontSize: "0.82rem", marginTop: 8 }}>
+            Planets: aim for about f/{planetaryFr[0].toFixed(0)}–f/{planetaryFr[1].toFixed(0)} with these pixels → Barlow ≈ {(planetaryFr[0] / (focal / aperture)).toFixed(1)}×–{(planetaryFr[1] / (focal / aperture)).toFixed(1)}×.
+          </p>
+        </div>
+      }
+    >
+      <div className="grid g2" style={{ gap: 14 }}>
+        <Readout label="Plate scale" value={scale.toFixed(2)} unit="″/px" tone={verdict[1] === "ok" ? "ok" : "warn"} />
+        <Readout label="Field of view" value={`${fmt(fovW, 1)}′ × ${fmt(fovH, 1)}′`} />
+        <Readout label="Focal ratio" value={`f/${fr.toFixed(1)}`} />
+        <Readout label="Ideal for your seeing" value={`${lo.toFixed(2)}–${hi.toFixed(2)}`} unit="″/px" />
+      </div>
+      <p className={verdict[1] === "ok" ? "status-ok" : "status-warn"}>{verdict[0]}</p>
+      <div className="ctrl"><span className="muted" style={{ fontSize: "0.88rem" }}>Camera sensor</span>
+        <Chips options={SENSORS.map((x) => x.id)} value={sensor} onChange={(v) => { touch(); setSensor(v); setPx(SENSORS.find((x) => x.id === v)!.px); }} render={(v) => SENSORS.find((x) => x.id === v)!.label} />
+      </div>
+      <Slider label="Pixel size" value={px} min={1.5} max={9} step={0.01} display={`${px.toFixed(2)} µm`} onChange={(v) => { touch(); setPx(v); }} />
+      <Slider label="Telescope focal length" value={focal} min={135} max={4000} step={5} display={`${focal} mm`} onChange={(v) => { touch(); setFocal(v); }} />
+      <Slider label="Aperture" value={aperture} min={50} max={400} step={1} display={`${aperture} mm`} onChange={(v) => { touch(); setAperture(v); }} />
+      <div className="ctrl"><span className="muted" style={{ fontSize: "0.88rem" }}>Reducer / Barlow</span>
+        <Chips options={[0.63, 0.8, 1, 2, 3]} value={factor} onChange={(v) => { touch(); setFactor(v); }} render={(v) => (v === 1 ? "None" : `${v}×`)} />
+      </div>
+      <Slider label="Seeing (star blur)" value={seeing} min={1} max={5} step={0.1} display={`${seeing.toFixed(1)}″`} onChange={(v) => { touch(); setSeeing(v); }} />
+    </SimShell>
+  );
+}
+
 /* ---------- Registry ---------- */
 export const SIMS: Record<string, { title: string; track: string; blurb: string; C: ComponentType }> = {
   thruster: { title: "Thruster simulator", track: "aerospace", blurb: "Throttle up and see if you reach orbit.", C: ThrusterSim },
@@ -764,4 +986,9 @@ export const SIMS: Record<string, { title: string; track: string; blurb: string;
   exposure: { title: "Night exposure triangle", track: "astrophotography", blurb: "ISO, aperture and shutter on a live preview.", C: ExposureSim },
   rule500: { title: "Rule of 500 & NPF", track: "astrophotography", blurb: "Longest exposure before stars trail.", C: Rule500Sim },
   stacking: { title: "Stacking & noise", track: "astrophotography", blurb: "Stack frames and watch the noise melt away.", C: StackingSim },
+  platescale: { title: "Plate scale & field of view", track: "astrophotography", blurb: "Match a camera to a telescope and your seeing.", C: PlateScaleSim },
+  units: { title: "Space distance converter", track: "math", blurb: "km, AU, light-years and parsecs — plus light travel time.", C: UnitsSim },
+  angular: { title: "Angular size calculator", track: "math", blurb: "How big does it look? The small-angle formula.", C: AngularSim },
+  magnitude: { title: "Magnitude calculator", track: "math", blurb: "Brightness ratios and the distance modulus.", C: MagnitudeSim },
+  parallax: { title: "Parallax distance", track: "math", blurb: "Turn a tiny angle into a star distance.", C: ParallaxSim },
 };
